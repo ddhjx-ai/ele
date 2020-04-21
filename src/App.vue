@@ -5,5 +5,5 @@
 </template>
 
 <style lang="scss">
-@import url('./styles/normalize.scss');
+// @import './styles/normalize.scss';
 </style>

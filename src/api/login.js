@@ -11,5 +11,19 @@ export const getCode = function(data) {
 // 获取用户角色
 
 // 登录
+export function Login(data) {
+  return request({
+    method: 'post',
+    url: '/login/',
+    data
+  })
+}
 
 // 注册
+export function Register(data) {
+  return request({
+    method: 'post',
+    url: '/register/',
+    data
+  })
+}

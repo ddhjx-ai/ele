@@ -25,7 +25,7 @@ server.interceptors.response.use(function (response) {
     Message.error(data.message)
     return Promise.reject(response.data)
   }
-  return response;
+  return data;
 }, function (error) {
   // 对响应错误做点什么
   return Promise.reject(error);

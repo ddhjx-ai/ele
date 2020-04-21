@@ -46,10 +46,15 @@
           <label>验证码</label>
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-input minlength="6" maxlength="6" v-model.number="ruleForm.code"></el-input>
+              <el-input minlength="6" maxlength="6" v-model="ruleForm.code"></el-input>
             </el-col>
             <el-col :span="12">
-              <el-button type="success" class="block" @click="getCheckCode">获取验证码</el-button>
+              <el-button
+                type="success"
+                class="block"
+                :disabled="codeDisbale"
+                @click="getCheckCode"
+              >{{codeText}}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -59,8 +64,13 @@
             v-if="passShow"
             @click="submitForm('ruleForm')"
             class="block login-btn"
-          >注册</el-button> -->
-          <el-button type="danger" :disabled="isDisabled" @click="submitForm('ruleForm')" class="block login-btn">{{currentIndex === 1 ? '注册' : '登录' }}</el-button>
+          >注册</el-button>-->
+          <el-button
+            type="danger"
+            :disabled="isDisabled"
+            @click="submitForm('ruleForm')"
+            class="block login-btn"
+          >{{currentIndex === 1 ? '注册' : '登录' }}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -68,7 +78,9 @@
 </template>
 
 <script>
-import {getCode} from '@/api/login.js'
+// 加密
+import sha1 from 'js-sha1';
+import { getCode, Register,Login } from "@/api/login.js";
 import { reactive, ref, isRef, onMounted } from "@vue/composition-api";
 import {
   validateEmail,
@@ -111,7 +123,7 @@ export default {
     let validatePass2 = (rule, value, callback) => {
       if (value === "") {
         return callback(new Error("请再次输入密码"));
-      } else if (value !== this.ruleForm.password) {
+      } else if (value !== ruleForm.password) {
         return callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
@@ -128,15 +140,18 @@ export default {
     };
     // 对象类型的数据都需要使用reactive()形式来进行声明
     const menuTab = reactive([
-      {id: 1,txt: "登录"},
-      {id: 2,txt: "注册"}
+      { id: 1, txt: "登录" },
+      { id: 2, txt: "注册" }
     ]);
 
     // 基础数据类型的声明,使用ref(),取值是需要通过currentIndex.value获取值
     // 修改是也是需要currentIndex.value = xxx 进行修改
     const currentIndex = ref(0);
     const passShow = ref(false);
-    const isDisabled = ref(true)
+    const isDisabled = ref(true);
+    const codeDisbale = ref(false);
+    const codeText = ref("获取验证码");
+    const timer = ref(null);
     // 表单数据
     const ruleForm = reactive({
       username: "",
@@ -159,43 +174,106 @@ export default {
 
     // 声明函数
     // 获取验证码
-    const getCheckCode = (() => {
-      if(ruleForm.username === ''){
-        return root.$message.error('邮箱不能为空')
+    const getCheckCode = () => {
+      if (ruleForm.username === "") {
+        return root.$message.error("邮箱不能为空");
       }
-      if(validateEmail(ruleForm.username)){
-        return root.$message.error("邮箱格式有误，请重新输入")
+      if (validateEmail(ruleForm.username)) {
+        return root.$message.error("邮箱格式有误，请重新输入");
       }
       let data = {
         username: ruleForm.username,
-        module: currentIndex === 0 ? 'login' : 'register'
-      }
-      getCode(data)
-    })
-    const toggleMenu = (i => {
-      console.log(i);
+        module: currentIndex === 0 ? "login" : "register"
+      };
+      codeDisbale.value = true;
+      codeText.value = "发送中...";
+
+      setTimeout(() => {
+        getCode(data).then(res => {
+          if (res.resCode === 0) {
+            root.$message.success("验证码已发送");
+            isDisabled.value = false;
+            // 开启定时器
+            startTime();
+          }
+        });
+      }, 2000);
+    };
+    const toggleMenu = i => {
       currentIndex.value = i;
       passShow.value = i === 1 ? true : false;
       refs["ruleForm"].resetFields();
-    })
-    const submitForm = (formName => {
-      // this.$refs()
+      clearTimer()
+    };
+    // 提交表单
+    const submitForm = formName => {
+      // this.$refs[formName]   vue2.x写法
       refs[formName].validate(valid => {
         if (valid) {
-          isDisabled.value = false
-          alert("submit!");
+          if(currentIndex.value === 1){
+            register()
+          }else{
+            login()
+          }
         } else {
           console.log("error submit!!");
           return false;
         }
       });
-    })
-
+    };
+    // 登录
+    const login = () => {
+      let data = {
+        username: ruleForm.username,
+        password: sha1(ruleForm.password),
+        code: ruleForm.code
+      };
+      Login(data).then(res => {
+        root.$message.success("登录成功");
+        root.$router.push({name: 'Console'})
+      });
+    };
+    // 注册
+    const register = () => {
+      let data = {
+        username: ruleForm.username,
+        password: sha1(ruleForm.password),
+        code: ruleForm.code
+      };
+      Register(data).then(res => {
+        root.$message.success("注册成功");
+        toggleMenu(0);
+        clearTimer();
+      });
+    };
+    // 倒计时函数
+    const startTime = () => {
+      let number = 60;
+      codeText.value = `倒计时${number}秒`;
+      timer.value = setInterval(() => {
+        number--;
+        if (number === 0) {
+          codeText.value = `获取验证码`;
+          codeDisbale.value = false;
+          clearInterval(timer.value);
+        } else {
+          codeText.value = `倒计时${number}秒`;
+        }
+      }, 1000);
+    };
+    // 移除倒计时
+    const clearTimer = () => {
+      codeDisbale.value = false;
+      codeText.value = "获取验证码";
+      clearInterval(timer.value);
+    };
     // 所有声明的函数和变量都需要暴露出去
     return {
       menuTab,
       currentIndex,
       isDisabled,
+      codeDisbale,
+      codeText,
       passShow,
       toggleMenu,
       submitForm,
