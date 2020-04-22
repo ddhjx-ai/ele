@@ -7,6 +7,7 @@ const whiteRouter = ["/login"]; // indexOf方法，判断数组中是否存在�
 router.beforeEach((to, from, next) => {
   if (getToken()) {
     if(to.path === '/login'){
+      console.log(to)
       removeToken()
       removeUsername()
       store.commit('app/set_token','')
