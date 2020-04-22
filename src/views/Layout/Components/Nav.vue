@@ -42,7 +42,7 @@ export default {
     /* 
       computed 监听
     */
-    const isCollapse = computed(() => root.$store.state.isCollapse)
+    const isCollapse = computed(() => root.$store.state.app.isCollapse)
 
     /* 
       methods函数

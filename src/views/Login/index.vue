@@ -228,10 +228,14 @@ export default {
         password: sha1(ruleForm.password),
         code: ruleForm.code
       };
-      Login(data).then(res => {
+      root.$store.dispatch('app/login',data).then(res => {
         root.$message.success("登录成功");
         root.$router.push({name: 'Console'})
-      });
+      })
+      /* Login(data).then(res => {
+        root.$message.success("登录成功");
+        root.$router.push({name: 'Console'})
+      }); */
     };
     // 注册
     const register = () => {

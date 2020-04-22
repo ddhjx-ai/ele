@@ -6,9 +6,9 @@
     <div class="pull-right">
       <div class="user-info pull-left">
         <img src="../../../assets/images/face.jpg" alt />
-        管理员
+        {{username}}
       </div>
-      <div class="header-icon pull-left">
+      <div class="header-icon pull-left" @click="exit">
         <svg-icon iconClass="exit" class="exit"></svg-icon>
       </div>
     </div>
@@ -19,12 +19,22 @@ import { computed } from "@vue/composition-api";
 export default {
   name: "layoutHeader",
   setup(props, { root }) {
+    const username = computed(() => root.$store.state.app.username)
     const navMeunStatus = () => {
-      root.$store.commit('setCollapse')
+      root.$store.commit('app/setCollapse')
+    }
+    const exit = ()=>{
+      root.$store.dispatch('app/logout').then(() => {
+        root.$router.push({
+          name: 'Login'
+        })
+      })
     }
 
     return{
-      navMeunStatus
+      navMeunStatus,
+      username,
+      exit
     }
   }
 };

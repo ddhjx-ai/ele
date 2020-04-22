@@ -19,7 +19,7 @@ export default {
     LayoutNav
   },
   setup(props, {root}){
-    const meunStatus = computed(() => root.$store.state.isCollapse)
+    const meunStatus = computed(() => root.$store.state.app.isCollapse)
 
     return{
       meunStatus

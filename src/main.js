@@ -6,6 +6,8 @@ import ElementUI from 'element-ui'
 import composition from '@vue/composition-api'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/icon'
+
+import './router/premit'
 Vue.use(ElementUI)
 // 导入vue3.0
 Vue.use(composition)
