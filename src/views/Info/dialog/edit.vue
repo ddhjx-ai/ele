@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="新增"
+      title="修改"
       width="580px"
       @open="openDialog"
       :visible.sync="data.dialogFormVisible"
@@ -9,7 +9,7 @@
     >
       <el-form :model="data.form" ref="form" :rules="data.rules">
         <el-form-item label="类型:" :label-width="formLabelWidth" prop="category">
-          <el-select v-model="data.form.category" placeholder="请选择活动区域">
+          <el-select v-model="data.form.categoryId" placeholder="请选择活动区域">
             <el-option
               :label="item.category_name"
               :value="item.id"
@@ -34,12 +34,11 @@
 </template>
 
 <script>
-import { AddInfo } from "@/api/news";
+import { AddInfo,EditInfo } from "@/api/news";
 import {
   reactive,
   ref,
   watchEffect,
-  watch,
   onMounted
 } from "@vue/composition-api";
 export default {
@@ -52,6 +51,10 @@ export default {
     category: {
       type: Array,
       default: () => []
+    },
+    sendData: {
+      type: Object,
+      default: ()=>({})
     }
   },
   setup(props, { emit, root, refs }) {
@@ -61,13 +64,13 @@ export default {
       dialogFormVisible: false,
       options: [],
       form: {
-        category: "",
+        categoryId: "",
         title: "",
         content: ""
       },
       submitLoading: false,
       rules: {
-        category: [
+        categoryId: [
           { required: true, message: "请选择类型", trigger: "change" }
         ],
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
@@ -86,15 +89,18 @@ export default {
       emit("update:flag", false);
     };
     const openDialog = () => {
+      let currentData = props.sendData.data
+      data.form.title = currentData.title
+      data.form.categoryId = currentData.categoryId
       data.options = props.category;
-      console.log(props.category);
+      console.log(data.options)
     };
     const cancelsubmit = () => {
       data.dialogFormVisible = false;
       resetFields()
     }
     const submit = () => {
-      if(data.form.category === '') {
+      if(data.form.categoryId === '') {
         return root.$message.error('请选择类型')
       }
       if(data.form.title === '') {
@@ -103,8 +109,12 @@ export default {
       if(data.form.content === '') {
         return root.$message.error('请输入概况内容')
       }
+      let editData = {
+        ...data.form,
+        id: props.sendData.data.id
+      } 
       data.submitLoading = true;
-      AddInfo({ ...data.form })
+      EditInfo(editData)
         .then(res => {
           if (res.resCode === 0) {
             root.$message.success(res.message);

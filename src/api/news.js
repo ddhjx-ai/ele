@@ -52,3 +52,30 @@ export const GetList = function(data = {}) {
     data
   })
 }
+
+// 删除信息  	/news/deleteInfo/
+export const DeleteInfo = function(data = {}) {
+  return request({
+    method: 'post',
+    url: '/news/deleteInfo/',
+    data
+  })
+}
+
+// 修改信息 /news/editInfo/
+export const EditInfo = function(data = {}) {
+  return request({
+    method: 'post',
+    url: '/news/editInfo/',
+    data
+  })
+}
+
+// 添加子级  	/news/addChildrenCategory/
+export const AddChildrenCategory = function(data = {}) {
+  return request({
+    method: 'post',
+    url: '/news/addChildrenCategory/',
+    data
+  })
+}

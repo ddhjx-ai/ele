@@ -10,6 +10,7 @@ export function global() {
     }).then(() => {
       params.fn && params.fn()
     }).catch(() => {
+      params.catchFn && params.catchFn()
       Message({
         type: 'info',
         message: '已取消删除'
