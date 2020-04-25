@@ -60,14 +60,15 @@
       type="index"
       width="50">
     </el-table-column>
-      <el-table-column prop="title" label="标题" width="830" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="categoryId" label="类型" :formatter="toType" width="130" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="createDate" label="日期" :formatter="toDate" width="230" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="user" label="管理员" width="120" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="title" label="标题" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="categoryId" label="类型" :formatter="toType"  header-align="center" align="center"></el-table-column>
+      <el-table-column prop="createDate" label="日期" :formatter="toDate" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="user" label="管理员"  header-align="center" align="center"></el-table-column>
       <el-table-column label="操作" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button size="mini" type="success" @click="remove(scope.row)">删除</el-button>
-          <el-button size="mini" type="danger" @click="edit(scope.row.id)">修改</el-button>
+          <el-button size="mini" type="danger" @click="edit(scope.row.id)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="toDetail(scope.row)">编辑详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -177,7 +178,7 @@ export default {
     // bianji 
     const edit = (id) => {
       sendData.data = tableData.data.find(item => item.id === id)
-      console.log(sendData.data)
+      // console.log(sendData.data)
       editFormVisible.value = true
     }
 
@@ -203,10 +204,10 @@ export default {
     }
     const toType = (row) => {
       if(options.data.length === 0) return
-      let data = options.data.find(item => {
+      let currentData = options.data.find(item => {
         return item.id === row.categoryId
       })
-      return data.category_name
+      return currentData ? currentData.category_name : null
     }
     const confirmRemove = () => {
       DeleteInfo({
@@ -268,6 +269,18 @@ export default {
       })
     } */
 
+    const toDetail = (item) => {
+      root.$store.commit('infoDetail/SET_ID', item.id)
+      root.$store.commit('infoDetail/SET_TITLE', item.title)
+      root.$router.push({
+        name:'InfoDetail'/* ,
+        params: {
+          id: item.id,
+          title: item.title
+        } */
+      })
+    }
+
     // 生命周期
     onMounted(() => {
       getInfoCategory().then(res => {
@@ -299,7 +312,8 @@ export default {
       handleSelectionChange,
       getList,
       search,
-      edit
+      edit,
+      toDetail
     };
   }
 };

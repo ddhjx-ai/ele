@@ -1,6 +1,8 @@
 <template>
   <div id="nav-wrap">
-    <h1 class="logo"><img src="../../../assets/logo.png" alt=""></h1>
+    <h1 class="logo">
+      <img src="../../../assets/logo.png" alt />
+    </h1>
     <el-menu
       default-active="1-4-1"
       class="el-menu-vertical-demo"
@@ -19,18 +21,26 @@
           </template>
 
           <!-- 子菜单 -->
-          <el-menu-item
-            v-for="subItem in item.children"
-            :key="subItem.id"
-            :index="subItem.path"
-          >{{subItem.meta.name}}</el-menu-item>
+          <template v-for="subItem in item.children">
+            <el-menu-item
+              v-if="!subItem.hidden"
+              :key="subItem.id"
+              :index="subItem.path"
+            >{{subItem.meta.name}}</el-menu-item>
+          </template>
         </el-submenu>
       </template>
     </el-menu>
   </div>
 </template>
 <script>
-import { reactive, ref, isRef, onMounted, computed } from "@vue/composition-api";
+import {
+  reactive,
+  ref,
+  isRef,
+  onMounted,
+  computed
+} from "@vue/composition-api";
 export default {
   // compiler
   name: "navMenu",
@@ -42,7 +52,7 @@ export default {
     /* 
       computed 监听
     */
-    const isCollapse = computed(() => root.$store.state.app.isCollapse)
+    const isCollapse = computed(() => root.$store.state.app.isCollapse);
 
     /* 
       methods函数
@@ -64,29 +74,31 @@ export default {
   height: 100vh;
   width: $navMenu;
   background-color: #344a5f;
-  @include webkit(transition, all .3s ease 0s);
-  svg{
+  @include webkit(transition, all 0.3s ease 0s);
+  svg {
     font-size: 20px;
     margin-right: 10px;
   }
 }
 .logo {
   text-align: center;
-  img { 
+  img {
     margin: 28px auto 25px;
     width: 92px;
-    @include webkit(transition, all .3s ease 0s);
+    @include webkit(transition, all 0.3s ease 0s);
   }
 }
-.open{
-  #nav-wrap{
+.open {
+  #nav-wrap {
     width: $navMenu;
   }
 }
-.close{
-  #nav-wrap{
+.close {
+  #nav-wrap {
     width: $navMenuMin;
-    .logo img { width: 60%; }
+    .logo img {
+      width: 60%;
+    }
   }
 }
 </style>
