@@ -18,11 +18,12 @@
         class="login-form"
         size="medium"
       >
-        <el-form-item prop="username" class="item-form">
+        <el-form-item class="item-form">
           <label>邮箱</label>
           <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+          <!-- <el-input type="text" value="1103@qq.com" autocomplete="off"></el-input> -->
         </el-form-item>
-        <el-form-item prop="password" class="item-form">
+        <el-form-item class="item-form">
           <label>密码</label>
           <el-input
             type="password"
@@ -31,6 +32,13 @@
             v-model="ruleForm.password"
             autocomplete="off"
           ></el-input>
+          <!-- <el-input
+            type="password"
+            minlength="6"
+            maxlength="20"
+            value="a12345678"
+            autocomplete="off"
+          ></el-input> -->
         </el-form-item>
         <el-form-item prop="passwords" class="item-form" v-if="passShow">
           <label>重复密码</label>
@@ -175,12 +183,12 @@ export default {
     // 声明函数
     // 获取验证码
     const getCheckCode = () => {
-      if (ruleForm.username === "") {
+      /* if (ruleForm.username === "") {
         return root.$message.error("邮箱不能为空");
       }
       if (validateEmail(ruleForm.username)) {
         return root.$message.error("邮箱格式有误，请重新输入");
-      }
+      } */
       let data = {
         username: ruleForm.username,
         module: currentIndex === 0 ? "login" : "register"
@@ -195,8 +203,14 @@ export default {
             isDisabled.value = false;
             // 开启定时器
             startTime();
+          }else {
+            isDisabled.value = false;
+            codeText.value = `获取验证码`;
           }
-        });
+        }).catch(() => {
+          isDisabled.value = false;
+          codeText.value = `获取验证码`;
+        })
       }, 2000);
     };
     const toggleMenu = i => {
@@ -224,6 +238,8 @@ export default {
     // 登录
     const login = () => {
       let data = {
+        /* username: '1103@qq.com',
+        password: sha1('a12345678'), */
         username: ruleForm.username,
         password: sha1(ruleForm.password),
         code: ruleForm.code

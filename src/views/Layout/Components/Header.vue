@@ -24,6 +24,7 @@ export default {
       root.$store.commit('app/setCollapse')
     }
     const exit = ()=>{
+      root.$store.commit('permission/SET_ROLES', [])
       root.$store.dispatch('app/logout').then(() => {
         root.$router.push({
           name: 'Login'

@@ -7,15 +7,33 @@ const whiteRouter = ["/login"]; // indexOf方法，判断数组中是否存在�
 router.beforeEach((to, from, next) => {
   if (getToken()) {
     if(to.path === '/login'){
-      console.log(to)
       removeToken()
       removeUsername()
       store.commit('app/set_token','')
       store.commit('app/set_username','')
       next()
     }else{
+      // next()
       // 获取用户角色，动态分配路由权限
-      next()
+      if(store.getters['permission/roles'].length === 0){
+        store.dispatch('permission/getRoles').then(res => {
+          console.log(res)
+          let roles = res
+          let button = res.data.button
+          let btnPerm = res.data.btnPerm
+          store.commit('app/SET_BUTTON',btnPerm)
+          store.dispatch('permission/createRouter', roles).then(res => {
+            let addRouters = store.getters['permission/addRouters']
+            // 路由更新
+            router.options.routes = store.getters['permission/allRouters']
+            // router.addRoutes:动态添加更多的路由规则。参数必须是一个符合 routes 选项要求的数组。
+            router.addRoutes(addRouters)
+            next({...to, replace:true})
+          })
+        })
+      }else {
+        next()
+      }
     }
   } else {
     if (whiteRouter.indexOf(to.path) !== -1) {

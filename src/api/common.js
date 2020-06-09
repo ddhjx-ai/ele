@@ -21,3 +21,25 @@ export function QinuiToken(data = {}){
     data
   })
 }
+
+// 请求列表组件
+/**
+ * 
+ * @param {*} data 
+ */
+export function loadTableData(data = {}){
+  return request({
+    method: data.method || 'get',
+    url: data.url,
+    data: data.data || {}
+  })
+}
+
+// 获取省份  	/cityPicker/
+export function getCityPicker(data = {}){
+  return request({
+    method: 'post',
+    url: '/cityPicker/',
+    data
+  })
+}

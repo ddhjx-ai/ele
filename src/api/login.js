@@ -19,11 +19,29 @@ export function Login(data) {
   })
 }
 
+// 退出
+export function Logout(data={}) {
+  return request({
+    method: 'post',
+    url: '/logout/',
+    data
+  })
+}
+
 // 注册
 export function Register(data) {
   return request({
     method: 'post',
     url: '/register/',
+    data
+  })
+}
+
+// 用户角色 /userRole/
+export function UserRole(data) {
+  return request({
+    method: 'post',
+    url: '/userRole/',
     data
   })
 }

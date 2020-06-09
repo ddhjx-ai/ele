@@ -66,7 +66,8 @@ module.exports = {
     proxy: {
       // 设置代理
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://www.web-jshtml.cn/productapi/token`, // 测试
+        // target: `http://www.web-jshtml.cn/productapi/token`, // 测试
+        target: `http://www.web-jshtml.cn/dependenciesapi/token`, // 测试
         changeOrigin: true,
         pathRewrite: {
           ["^" + process.env.VUE_APP_BASE_API]: ""

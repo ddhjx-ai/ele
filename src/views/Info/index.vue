@@ -47,7 +47,8 @@
         <el-button type="danger" @click="search">搜索</el-button>
       </el-form-item>
       <el-form-item class="pull-right">
-        <el-button type="danger" @click="dialogFormVisible = true">新增</el-button>
+        <el-button type="danger" @click="dialogFormVisible = true" v-btnPerm="'info:add'">新增</el-button>
+        <!-- <el-button type="danger" @click="dialogFormVisible = true" v-if="btnPerm('info:add')">新增</el-button> -->
       </el-form-item>
     </el-form>
 
@@ -66,9 +67,14 @@
       <el-table-column prop="user" label="管理员"  header-align="center" align="center"></el-table-column>
       <el-table-column label="操作" header-align="center" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" type="success" @click="remove(scope.row)">删除</el-button>
-          <el-button size="mini" type="danger" @click="edit(scope.row.id)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="toDetail(scope.row)">编辑详情</el-button>
+          <!-- 自定义指令设置按钮权限 -->
+          <el-button size="mini" type="success" v-btnPerm="'info:del'">测试</el-button>
+          <el-button size="mini" type="success" @click="remove(scope.row)" v-btnPerm="'info:del'">删除</el-button>
+          <el-button size="mini" type="danger" @click="edit(scope.row.id)" v-btnPerm="'info:edit'">编辑</el-button>
+          <el-button size="mini" type="danger" @click="toDetail(scope.row)" v-btnPerm="'info:detailed'">编辑详情</el-button>
+          <!-- <el-button size="mini" type="success" @click="remove(scope.row)" v-if="btnPerm('info:del')">删除</el-button>
+          <el-button size="mini" type="danger" @click="edit(scope.row.id)" v-if="btnPerm('info:edit')">编辑</el-button>
+          <el-button size="mini" type="danger" @click="toDetail(scope.row)" v-if="btnPerm('info:detailed')">编辑详情</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -76,8 +82,9 @@
     <div class="black-space-30"></div>
     <!-- 分页 -->
     <el-row>
-      <el-col :span="12">
-        <el-button type="primary" @click="removeAll">批量删除</el-button>
+      <el-col :span="12"> 
+        <el-button type="primary" @click="removeAll" v-btnPerm="'info:batchDel'">批量删除</el-button>
+        <!-- <el-button type="primary" @click="removeAll" v-if="btnPerm('info:batchDel')">批量删除</el-button> -->
       </el-col>
       <el-col :span="12">
         <el-pagination

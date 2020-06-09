@@ -37,7 +37,7 @@
 
 <script>
 import { GetList, EditInfo } from "@/api/news";
-import { reactive, ref, onMounted } from "@vue/composition-api";
+import { reactive, ref, onMounted, onActivated, onDeactivated } from "@vue/composition-api";
 import { timestampToTime } from "@/utils/common";
 import { common } from "@/api/common.js";
 import UploadImg from "@/components/uploading"
@@ -103,7 +103,6 @@ export default {
         id: data.id
       };
       GetList(params).then(res => {
-        console.log(res)
         let data = res.data.data[0];
         form.categoryId = data.categoryId;
         form.title = data.title;
@@ -118,16 +117,22 @@ export default {
       getInfoCategory().then(res => {
         data.options = res.data;
       });
-
-      getInfo();
     });
+
+    onActivated(() => {
+      data.id = root.$store.getters["infoDetail/infoId"]
+      getInfo();
+    })
+
+    onDeactivated(() => {
+      
+    })
 
     return {
       data,
       form,
 
       submit
-     
     };
   }
 };

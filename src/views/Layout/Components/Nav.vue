@@ -4,7 +4,7 @@
       <img src="../../../assets/logo.png" alt />
     </h1>
     <el-menu
-      default-active="1-4-1"
+      :default-active="defaultActive"
       class="el-menu-vertical-demo"
       :collapse="isCollapse"
       background-color="transparent"
@@ -53,14 +53,18 @@ export default {
       computed 监听
     */
     const isCollapse = computed(() => root.$store.state.app.isCollapse);
-
+    const defaultActive = computed(() => {
+      const route = root.$route
+      return route.path
+    })
     /* 
       methods函数
     */
 
     return {
       isCollapse,
-      routers
+      routers,
+      defaultActive
     };
   }
 };
